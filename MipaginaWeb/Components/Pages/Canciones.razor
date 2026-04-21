@@ -1,0 +1,220 @@
+﻿@page "/canciones"
+@rendermode InteractiveServer
+
+<h3>Administrador de Canciones</h3>
+
+<div class="row mb-3">
+    <div class="col-md-8">
+        <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Escribe el título de la canción..."
+                   @bind="nuevoTitulo" />
+            <div class="input-group-append">
+                @if (modoEdicion)
+                {
+                    <button class="btn btn-warning" @onclick="GuardarEdicion">
+                        <span class="oi oi-check"></span> Actualizar
+                    </button>
+                    <button class="btn btn-secondary" @onclick="CancelarEdicion">
+                        <span class="oi oi-x"></span> Cancelar
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-success" @onclick="AgregarCancion">
+                        <span class="oi oi-plus"></span> Agregar
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title">Filtros y Ordenamiento</h6>
+                <div class="form-row align-items-center">
+                    <div class="col-md-5">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Filtrar por palabra..."
+                               @bind="filtroTexto"
+                               @oninput="AplicarFiltro" />
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-control" @onchange="CambiarOrdenamiento">
+                            <option value="asc">Ordenar A-Z</option>
+                            <option value="desc">Ordenar Z-A</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-secondary btn-block" @onclick="LimpiarFiltros">
+                            Limpiar filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (cancionesFiltradas.Count == 0)
+{
+    <div class="alert alert-info">
+        <span class="oi oi-musical-note"></span>
+        @(string.IsNullOrWhiteSpace(filtroTexto)
+            ? "No hay canciones en la lista. ¡Agrega una!"
+            : "No se encontraron canciones con ese filtro.")
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-8">
+            <h5>
+                Canciones (@cancionesFiltradas.Count de @canciones.Count)
+                @if (!string.IsNullOrWhiteSpace(filtroTexto))
+                {
+                    <small class="text-muted">- Filtrando: "@filtroTexto"</small>
+                }
+            </h5>
+            <ul class="list-group">
+                @foreach (var cancion in cancionesFiltradas)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center @(cancionEditando == cancion ? "list-group-item-warning" : "")">
+                        <span class="flex-grow-1">@cancion</span>
+                        <div>
+                            <button class="btn btn-primary btn-sm mr-2" @onclick="() => IniciarEdicion(cancion)">
+                                <span class="oi oi-pencil"></span> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => EliminarCancion(cancion)">
+                                <span class="oi oi-trash"></span> Eliminar
+                            </button>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    // Colección principal de canciones
+    private List<string> canciones = new List<string>
+    {
+        "Summer of 69",
+        "Hotel California",
+        "Bohemian Rhapsody",
+        "Sweet Child O Mine",
+        "Summer in the City",
+        "Stairway to Heaven",
+        "Summer Breeze",
+        "November Rain"
+    };
+
+    // Colección filtrada y ordenada (se muestra en pantalla)
+    private List<string> cancionesFiltradas = new List<string>();
+    
+    // Variables para el formulario
+    private string nuevoTitulo = "";
+    private string filtroTexto = "";
+    private string ordenamiento = "asc";
+    private string? cancionEditando = null;
+    private bool modoEdicion => cancionEditando != null;
+
+    protected override void OnInitialized()
+    {
+        AplicarFiltroYOrdenamiento();
+    }
+
+    private void AgregarCancion()
+    {
+        if (!string.IsNullOrWhiteSpace(nuevoTitulo))
+        {
+            canciones.Add(nuevoTitulo.Trim());
+            nuevoTitulo = "";
+            AplicarFiltroYOrdenamiento();
+        }
+    }
+
+    private void EliminarCancion(string cancion)
+    {
+        canciones.Remove(cancion);
+        if (cancionEditando == cancion)
+        {
+            CancelarEdicion();
+        }
+        AplicarFiltroYOrdenamiento();
+    }
+
+    private void IniciarEdicion(string cancion)
+    {
+        cancionEditando = cancion;
+        nuevoTitulo = cancion;
+    }
+
+    private void GuardarEdicion()
+    {
+        if (!string.IsNullOrWhiteSpace(nuevoTitulo) && cancionEditando != null)
+        {
+            int indice = canciones.IndexOf(cancionEditando);
+            if (indice >= 0)
+            {
+                canciones[indice] = nuevoTitulo.Trim();
+            }
+            CancelarEdicion();
+            AplicarFiltroYOrdenamiento();
+        }
+    }
+
+    private void CancelarEdicion()
+    {
+        cancionEditando = null;
+        nuevoTitulo = "";
+    }
+
+    private void AplicarFiltro(ChangeEventArgs e)
+    {
+        filtroTexto = e.Value?.ToString() ?? "";
+        AplicarFiltroYOrdenamiento();
+    }
+
+    private void CambiarOrdenamiento(ChangeEventArgs e)
+    {
+        ordenamiento = e.Value?.ToString() ?? "asc";
+        AplicarFiltroYOrdenamiento();
+    }
+
+    private void LimpiarFiltros()
+    {
+        filtroTexto = "";
+        ordenamiento = "asc";
+        AplicarFiltroYOrdenamiento();
+    }
+
+    private void AplicarFiltroYOrdenamiento()
+    {
+        // LINQ para filtrar
+        var query = canciones.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(filtroTexto))
+        {
+            query = query.Where(c => c.Contains(filtroTexto, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // LINQ para ordenar
+        if (ordenamiento == "asc")
+        {
+            query = query.OrderBy(c => c);
+        }
+        else
+        {
+            query = query.OrderByDescending(c => c);
+        }
+
+        cancionesFiltradas = query.ToList();
+    }
+}

@@ -1,0 +1,54 @@
+﻿@page "/cambio-moneda"
+@rendermode InteractiveServer
+
+<h3>Cambio de moneda</h3>
+
+<div class="form-group row mb-3">
+    <label class="col-sm-2 col-form-label">Pesos</label>
+    <div class="col-sm-10">
+        <input type="number" class="form-control" @bind-value="pesos" @bind-value:event="oninput" />
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary mb-3" @onclick="Convertir">
+    Convertir
+</button>
+
+<div class="form-group row mb-3">
+    <label class="col-sm-2 col-form-label">Dólares</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" disabled value="@dolares.ToString("F4")" />
+    </div>
+</div>
+
+<div class="form-group row mb-3">
+    <label class="col-sm-2 col-form-label">Euros</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" disabled value="@euros.ToString("F4")" />
+    </div>
+</div>
+
+<div class="form-group row mb-3">
+    <label class="col-sm-2 col-form-label">Libras</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" disabled value="@libras.ToString("F4")" />
+    </div>
+</div>
+
+@code {
+    private const double TasaDolar = 0.058;
+    private const double TasaEuro = 0.053;
+    private const double TasaLibra = 0.046;
+
+    private double pesos = 0;
+    private double dolares = 0;
+    private double euros = 0;
+    private double libras = 0;
+
+    private void Convertir()
+    {
+        dolares = pesos * TasaDolar;
+        euros = pesos * TasaEuro;
+        libras = pesos * TasaLibra;
+    }
+}

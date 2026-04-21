@@ -1,0 +1,119 @@
+﻿@page "/estado-sistema"
+
+<PageTitle>Estado del Sistema</PageTitle>
+
+<h1>Visor de Estado del Sistema</h1>
+
+<div class="contenedor-pruebas">
+    <h3>Casos de Prueba:</h3>
+    
+    <div class="fila-prueba">
+        <span class="etiqueta">Código 200 - Operacional:</span>
+        <EstadoSistema CodigoEstado="200" />
+    </div>
+
+    <div class="fila-prueba">
+        <span class="etiqueta">Código 404 - No Encontrado:</span>
+        <EstadoSistema CodigoEstado="404" />
+    </div>
+
+    <div class="fila-prueba">
+        <span class="etiqueta">Código 500 - Error:</span>
+        <EstadoSistema CodigoEstado="500" />
+    </div>
+
+    <div class="fila-prueba">
+        <span class="etiqueta">Código 401 - Desconocido:</span>
+        <EstadoSistema CodigoEstado="401" />
+    </div>
+</div>
+
+
+<style>
+    .contenedor-pruebas {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        color: #666;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+    }
+
+    .fila-prueba {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 15px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .etiqueta {
+        font-weight: 600;
+        color: #555;
+        flex: 1;
+    }
+
+    .estado-contenedor {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+
+        .estado-contenedor:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+    .estado-codigo {
+        font-weight: bold;
+        font-size: 1.2em;
+        background: rgba(255,255,255,0.3);
+        padding: 4px 10px;
+        border-radius: 4px;
+        min-width: 45px;
+        text-align: center;
+    }
+
+    .estado-mensaje {
+        font-size: 1em;
+        font-weight: 500;
+    }
+
+    .estado-verde {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .estado-amarillo {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .estado-rojo {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .estado-gris {
+        background-color: #6c757d;
+        color: white;
+    }
+</style>

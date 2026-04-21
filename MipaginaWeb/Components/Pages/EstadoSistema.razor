@@ -1,0 +1,33 @@
+﻿@* Este es el COMPONENTE - sin @page porque no es una página *@
+
+<div class="estado-contenedor @ObtenerClaseCSS()">
+    <span class="estado-codigo">@CodigoEstado</span>
+    <span class="estado-mensaje">@ObtenerMensaje()</span>
+</div>
+
+@code {
+    [Parameter]
+    public int CodigoEstado { get; set; }
+
+    private string ObtenerMensaje()
+    {
+        return CodigoEstado switch
+        {
+            200 => "Sistema Operacional",
+            404 => "Recurso No Encontrado",
+            500 => "Error Interno del Servidor",
+            _ => "Estado Desconocido"
+        };
+    }
+
+    private string ObtenerClaseCSS()
+    {
+        return CodigoEstado switch
+        {
+            200 => "estado-verde",
+            404 => "estado-amarillo",
+            500 => "estado-rojo",
+            _ => "estado-gris"
+        };
+    }
+}

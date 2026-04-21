@@ -1,0 +1,87 @@
+﻿@page "/listas-de-numeros"
+@rendermode InteractiveServer
+
+<h3>Listas de numeros</h3>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="form-group row">
+            <label for="numero1" class="col-sm-3 col-form-label">Número 1</label>
+            <div class="col-sm-9">
+                <input type="number" class="form-control" id="numero1" @bind="numero1" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="form-group row">
+            <label for="numero2" class="col-sm-3 col-form-label">Número 2</label>
+            <div class="col-sm-9">
+                <input type="number" class="form-control" id="numero2" @bind="numero2" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <button class="btn btn-primary" @onclick="Calcular">Calcular</button>
+    </div>
+</div>
+
+@if (mostrarResultados)
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Pares</h4>
+            <ul class="list-group">
+                @foreach (var num in numerosPares)
+                {
+                    <li class="list-group-item">@num</li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h4>Impares</h4>
+            <ul class="list-group">
+                @foreach (var num in numerosImpares)
+                {
+                    <li class="list-group-item">@num</li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    private int numero1 = 20;
+    private int numero2 = 5;
+    private List<int> numerosPares = new List<int>();
+    private List<int> numerosImpares = new List<int>();
+    private bool mostrarResultados = false;
+
+    private void Calcular()
+    {
+        numerosPares.Clear();
+        numerosImpares.Clear();
+
+        int inicio = Math.Min(numero1, numero2);
+        int fin = Math.Max(numero1, numero2);
+
+        for (int i = inicio; i <= fin; i++)
+        {
+            if (i % 2 == 0)
+            {
+                numerosPares.Add(i);
+            }
+            else
+            {
+                numerosImpares.Add(i);
+            }
+        }
+
+        mostrarResultados = true;
+    }
+}

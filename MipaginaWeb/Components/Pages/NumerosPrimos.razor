@@ -1,0 +1,80 @@
+﻿@page "/numeros-primos"
+@rendermode InteractiveServer
+
+<h3>Numeros primos</h3>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="form-group row">
+            <label for="numeroEntero" class="col-sm-4 col-form-label">Número entero</label>
+            <div class="col-sm-8">
+                <input type="number" class="form-control" id="numeroEntero" @bind="numeroEntero" min="1" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <button class="btn btn-primary" @onclick="GenerarPrimos">Generar primos</button>
+    </div>
+</div>
+
+@if (mostrarResultados && numerosPrimos.Any())
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Números primos</h4>
+            <ul class="list-group">
+                @foreach (var primo in numerosPrimos)
+                {
+                    <li class="list-group-item">@primo</li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    private int numeroEntero = 10;
+    private List<int> numerosPrimos = new List<int>();
+    private bool mostrarResultados = false;
+
+    private void GenerarPrimos()
+    {
+        numerosPrimos.Clear();
+
+        if (numeroEntero < 1)
+        {
+            mostrarResultados = false;
+            return;
+        }
+
+        for (int i = 2; i <= numeroEntero; i++)
+        {
+            if (EsPrimo(i))
+            {
+                numerosPrimos.Add(i);
+            }
+        }
+
+        mostrarResultados = true;
+    }
+
+    private bool EsPrimo(int numero)
+    {
+        if (numero < 2) return false;
+        if (numero == 2) return true;
+        if (numero % 2 == 0) return false;
+
+        for (int i = 3; i * i <= numero; i += 2)
+        {
+            if (numero % i == 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

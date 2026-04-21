@@ -1,0 +1,233 @@
+﻿@page "/registro-productos"
+@rendermode InteractiveServer
+
+<h3>Registro de productos</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        
+        <div class="form-group">
+            <label>No. de inventario</label>
+            <input type="number" class="form-control" @bind="numeroInventario" />
+        </div>
+
+        <div class="form-group">
+            <label>Descripción</label>
+            <input type="text" class="form-control" @bind="descripcion" />
+        </div>
+
+        <div class="form-group">
+            <label>Departamento</label>
+            <div>
+                <input type="radio" name="depto" value="Frutas" checked="@(departamento == "Frutas")" @onchange="CambiarDepartamento" /> Frutas
+                <input type="radio" name="depto" value="Verduras" checked="@(departamento == "Verduras")" @onchange="CambiarDepartamento" /> Verduras
+                <input type="radio" name="depto" value="Lácteos" checked="@(departamento == "Lácteos")" @onchange="CambiarDepartamento" /> Lácteos
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <button class="btn btn-success" @onclick="GuardarDatos">Guardar datos</button>
+            <button class="btn btn-success" @onclick="MostrarTodos">Lista completa</button>
+            <button class="btn btn-success" @onclick="MostrarFrutas">Lista de frutas</button>
+            <button class="btn btn-success" @onclick="MostrarVerduras">Lista de verduras</button>
+            <button class="btn btn-success" @onclick="MostrarLacteos">Lista de lácteos</button>
+        </div>
+
+        @if (mensajeError != "")
+        {
+            <div class="alert alert-danger">
+                @mensajeError
+            </div>
+        }
+
+        @if (mostrarTabla == true)
+        {
+            <h5>@tituloTabla</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No. Inventario</th>
+                        <th>Descripción</th>
+                        <th>Departamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @* CORRECCIÓN: Usar mostrarNumeros en lugar de listaNumeros *@
+                    @for (int j = 0; j < mostrarNumeros.Count; j++)
+                    {
+                        <tr>
+                            <td>@mostrarNumeros[j]</td>
+                            <td>@mostrarDescripciones[j]</td>
+                            <td>@mostrarDepartamentos[j]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button class="btn btn-success" @onclick="CerrarLista">Cerrar lista</button>
+        }
+
+    </div>
+</div>
+
+@code {
+    int numeroInventario = 0;
+    string descripcion = "";
+    string departamento = "Frutas";
+    string mensajeError = "";
+    string tituloTabla = "";
+    bool mostrarTabla = false;
+    bool repetido = false;
+    int i = 0;
+
+    List<int> listaNumeros = new List<int>();
+    List<string> listaDescripciones = new List<string>();
+    List<string> listaDepartamentos = new List<string>();
+
+    List<int> mostrarNumeros = new List<int>();
+    List<string> mostrarDescripciones = new List<string>();
+    List<string> mostrarDepartamentos = new List<string>();
+
+    void CambiarDepartamento(ChangeEventArgs e)
+    {
+        departamento = e.Value!.ToString()!;
+    }
+
+    void GuardarDatos()
+    {
+        mensajeError = "";
+        repetido = false;
+        i = 0;
+
+        if (numeroInventario <= 0)
+        {
+            mensajeError = "El número de inventario debe ser mayor a 0";
+            return;
+        }
+
+        if (descripcion == "")
+        {
+            mensajeError = "La descripción no puede estar vacía";
+            return;
+        }
+
+        while (i < listaNumeros.Count)
+        {
+            if (listaNumeros[i] == numeroInventario)
+            {
+                repetido = true;
+            }
+            i = i + 1;
+        }
+
+        if (repetido == true)
+        {
+            mensajeError = "Error: El número de inventario ya existe";
+            return;
+        }
+
+        listaNumeros.Add(numeroInventario);
+        listaDescripciones.Add(descripcion);
+        listaDepartamentos.Add(departamento);
+
+        numeroInventario = 0;
+        descripcion = "";
+        departamento = "Frutas";
+    }
+
+    void MostrarTodos()
+    {
+        mostrarNumeros = new List<int>();
+        mostrarDescripciones = new List<string>();
+        mostrarDepartamentos = new List<string>();
+        i = 0;
+
+        while (i < listaNumeros.Count)
+        {
+            mostrarNumeros.Add(listaNumeros[i]);
+            mostrarDescripciones.Add(listaDescripciones[i]);
+            mostrarDepartamentos.Add(listaDepartamentos[i]);
+            i = i + 1;
+        }
+
+        tituloTabla = "Lista completa";
+        mostrarTabla = true;
+        mensajeError = "";
+    }
+
+    void MostrarFrutas()
+    {
+        mostrarNumeros = new List<int>();
+        mostrarDescripciones = new List<string>();
+        mostrarDepartamentos = new List<string>();
+        i = 0;
+
+        while (i < listaNumeros.Count)
+        {
+            if (listaDepartamentos[i] == "Frutas")
+            {
+                mostrarNumeros.Add(listaNumeros[i]);
+                mostrarDescripciones.Add(listaDescripciones[i]);
+                mostrarDepartamentos.Add(listaDepartamentos[i]);
+            }
+            i = i + 1;
+        }
+
+        tituloTabla = "Lista de frutas";
+        mostrarTabla = true;
+        mensajeError = "";
+    }
+
+    void MostrarVerduras()
+    {
+        mostrarNumeros = new List<int>();
+        mostrarDescripciones = new List<string>();
+        mostrarDepartamentos = new List<string>();
+        i = 0;
+
+        while (i < listaNumeros.Count)
+        {
+            if (listaDepartamentos[i] == "Verduras")
+            {
+                mostrarNumeros.Add(listaNumeros[i]);
+                mostrarDescripciones.Add(listaDescripciones[i]);
+                mostrarDepartamentos.Add(listaDepartamentos[i]);
+            }
+            i = i + 1;
+        }
+
+        tituloTabla = "Lista de verduras";
+        mostrarTabla = true;
+        mensajeError = "";
+    }
+
+    void MostrarLacteos()
+    {
+        mostrarNumeros = new List<int>();
+        mostrarDescripciones = new List<string>();
+        mostrarDepartamentos = new List<string>();
+        i = 0;
+
+        while (i < listaNumeros.Count)
+        {
+            if (listaDepartamentos[i] == "Lácteos")
+            {
+                mostrarNumeros.Add(listaNumeros[i]);
+                mostrarDescripciones.Add(listaDescripciones[i]);
+                mostrarDepartamentos.Add(listaDepartamentos[i]);
+            }
+            i = i + 1;
+        }
+
+        tituloTabla = "Lista de lácteos";
+        mostrarTabla = true;
+        mensajeError = "";
+    }
+
+    void CerrarLista()
+    {
+        mostrarTabla = false;
+        mostrarNumeros = new List<int>();
+        mostrarDescripciones = new List<string>();
+        mostrarDepartamentos = new List<string>();
+    }
+}
